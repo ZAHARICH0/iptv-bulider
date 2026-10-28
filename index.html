@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101020">
+  <title>IPTV Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="IPTV Builder">
+        <span class="brand-icon">▶</span>
+        <span>IPTV <b>Builder</b><small>Плейлисты под твой запрос</small></span>
+      </a>
+      <span class="version">BETA 1.0</span>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="eyebrow"><span class="pulse"></span> M3U GENERATOR</div>
+        <h1>Твой плейлист.<br><span>Твои правила.</span></h1>
+        <p class="hero-copy">Опиши, какие каналы нужны, — собери M3U для Televizo, IPTV и IPTV Pro.</p>
+      </section>
+
+      <section class="panel generator">
+        <label class="field-label" for="prompt">Что будем смотреть?</label>
+        <textarea id="prompt" rows="3" placeholder="Например: все детские каналы России и Казахстана"></textarea>
+        <div class="quick-prompts">
+          <button type="button" class="chip" data-prompt="Все каналы России">🇷🇺 Все каналы России</button>
+          <button type="button" class="chip" data-prompt="Детские каналы России">🧸 Детские России</button>
+          <button type="button" class="chip" data-prompt="Новости со всего мира">🌍 Новости мира</button>
+          <button type="button" class="chip" data-prompt="Музыкальные каналы на русском языке">🎵 Музыка на русском</button>
+        </div>
+
+        <div class="filters">
+          <div class="field">
+            <label for="country">Страна</label>
+            <select id="country">
+              <option value="">Авто из запроса / все страны</option>
+              <option value="ru">🇷🇺 Россия</option>
+              <option value="by">🇧🇾 Беларусь</option>
+              <option value="kz">🇰🇿 Казахстан</option>
+              <option value="ua">🇺🇦 Украина</option>
+              <option value="de">🇩🇪 Германия</option>
+              <option value="us">🇺🇸 США</option>
+              <option value="gb">🇬🇧 Великобритания</option>
+              <option value="fr">🇫🇷 Франция</option>
+              <option value="pl">🇵🇱 Польша</option>
+              <option value="am">🇦🇲 Армения</option>
+              <option value="az">🇦🇿 Азербайджан</option>
+              <option value="uz">🇺🇿 Узбекистан</option>
+              <option value="tr">🇹🇷 Турция</option>
+              <option value="in">🇮🇳 Индия</option>
+              <option value="jp">🇯🇵 Япония</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="category">Категория</label>
+            <select id="category">
+              <option value="">Все категории</option>
+              <option value="animation">Мультфильмы / анимация</option>
+              <option value="kids">Детские</option>
+              <option value="news">Новости</option>
+              <option value="music">Музыка</option>
+              <option value="sports">Спорт</option>
+              <option value="movies">Фильмы</option>
+              <option value="entertainment">Развлечения</option>
+              <option value="documentary">Документальные</option>
+              <option value="general">Общие</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="language">Язык</label>
+            <select id="language">
+              <option value="">Любой</option>
+              <option value="rus">Русский</option>
+              <option value="eng">Английский</option>
+              <option value="kaz">Казахский</option>
+              <option value="bel">Белорусский</option>
+              <option value="ukr">Украинский</option>
+              <option value="deu">Немецкий</option>
+              <option value="fra">Французский</option>
+              <option value="spa">Испанский</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modes">
+          <label class="mode-card">
+            <span class="mode-icon">🗓️</span>
+            <span class="mode-text"><b>EPG</b><small>Телепрограмма</small></span>
+            <input type="checkbox" id="epgToggle">
+            <span class="switch"></span>
+          </label>
+          <label class="mode-card">
+            <span class="mode-icon">⏪</span>
+            <span class="mode-text"><b>Архив EPG</b><small>Если поток поддерживает catch-up</small></span>
+            <input type="checkbox" id="archiveToggle">
+            <span class="switch"></span>
+          </label>
+        </div>
+
+        <div id="epgFields" class="field hidden">
+          <label for="epgUrl">Ссылка на XMLTV EPG (необязательно)</label>
+          <input id="epgUrl" type="url" placeholder="https://example.com/guide.xml">
+          <p class="hint">EPG-ссылка должна быть доступна и содержать программы для выбранных каналов.</p>
+        </div>
+        <div id="archiveFields" class="field hidden">
+          <label for="archiveDays">Дней архива (метаданные)</label>
+          <select id="archiveDays">
+            <option value="1">1 день</option><option value="3">3 дня</option>
+            <option value="7" selected>7 дней</option><option value="14">14 дней</option>
+          </select>
+          <p class="hint warning">Это добавляет метаданные catch-up в M3U, но не создаёт архив. Архив заработает только у потоков, серверов и плееров, которые его поддерживают.</p>
+        </div>
+
+        <button id="generateBtn" class="primary-btn"><span>✦</span> Создать M3U</button>
+        <div id="status" class="status" role="status" aria-live="polite"></div>
+        <p class="source-note">Источник каналов: <a href="https://iptv-org.github.io/iptv/index.m3u" target="_blank" rel="noopener">IPTV-org</a>. Это каталог публичных потоков; часть ссылок может не работать или быть недоступна в вашем регионе.</p>
+      </section>
+
+      <section class="results-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">YOUR PLAYLISTS</span><h2>История генераций</h2></div>
+          <button id="clearHistory" class="text-btn">Очистить историю</button>
+        </div>
+        <div id="history" class="history-list"></div>
+        <div id="emptyHistory" class="empty-state">
+          <div class="empty-icon">▤</div>
+          <b>Пока здесь пусто</b>
+          <span>Создай первый плейлист — он появится в истории.</span>
+        </div>
+      </section>
+      <footer>
+        <span>IPTV Builder · BETA 1.0</span>
+        <span>Создаёт M3U-файлы из публичных ссылок</span>
+      </footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
